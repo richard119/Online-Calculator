@@ -1,96 +1,126 @@
 <?php
    session_start();
 
-   if(isset($_SESSION['result'])){
-       $result = $_SESSION['result'];
+//------- initial global variant ---------------------
+   if(isset($_SESSION['result'])){       // current value
+       $g_result = $_SESSION['result'];
    }
    else{
-       $result = 0;
+       $g_result = 0;
    }
  
-   if(isset($_SESSION['operator'])){
-       $operator = $_SESSION['operator'];
+   if(isset($_SESSION['operator'])){    // operator: + - * /
+       $g_opt = $_SESSION['operator'];
    }
    else{
-       $operator = '';
+       $g_opt = '';
    }
 
-   if(isset($_SESSION['operand'])){
-       $operand = $_SESSION['operand'];
+   if(isset($_SESSION['operand'])){    // last time value
+       $g_opnum = $_SESSION['operand'];
    }
    else{
-       $operand = 0;
+       $g_opnum = 0;
    } 
  
-   if(isset($_SESSION['isNum'])){
-       $isNum = $_SESSION['isNum'];
+   if(isset($_SESSION['isNum'])){      // last button is Number?
+       $g_isNum = $_SESSION['isNum'];
    }
    else{
-       $isNum = '';
+       $g_isNum = '';
    } 
   
+   if(isset($_SESSION['decimal'])){   // decimal number
+       $g_dec = $_SESSION['decimal'];
+   }
+   else{
+       $g_dec = 0;
+   } 
+//-------------------------------------------
+
    $input =  $_POST['name'];
    $out   =  $_POST['out'];
    if( $out == '0.' ) {
-      $result = 0;
+      $g_result = 0;
    }
 
    if (eregi("[0-9]",$input))
    {
-      $input = $result*10 + (int)$input;
-      echo $input;
-      $_SESSION['result'] = $input;
-      $_SESSION['isNum'] = 'Y'; 
-  }
-   elseif( $input == '+' || $input == '-' || $input == '*' || $input == '/' ){
-      $_SESSION['operator'] = $input; 
-      $_SESSION['result'] = 0;
-      $_SESSION['isNum'] = ''; 
-
-      if ($isNum == 'Y'){ 
-         $_SESSION['operand'] = $result; 
-         echo $result;
+      if( $g_dec == 0 ){
+        $g_result = $g_result*10 + (int)$input;
       }
       else{
-         echo $operand;
+        $g_result = $g_result + (int)$input / pow(10,$g_dec);
+        $g_dec++;
+      }
+      echo $g_result;
+
+      $g_isNum  = 'Y'; 
+  }
+  elseif( $input == '.' ){
+      echo $g_result;
+      $g_dec = 1;
+      $g_isNum = 'Y';
+  }
+  elseif( $input == '+' || $input == '-' || $input == '*' || $input == '/' ){
+      if ($g_isNum == 'Y'){ 
+         $g_opnum = $g_result; 
+         echo $g_result;
+      }
+      else{
+         echo $g_opnum;
       } 
+
+      $g_opt = $input; 
+      $g_result = 0;
+      $g_isNum = ''; 
+      $g_dec = 0;
    }
    elseif( $input == '='){
-      if( $isNum == 'Y' ){
-        switch($operator){
+     if( $g_isNum == 'Y' ){
+        switch($g_opt){
           case '':
              break;
           case '+':
-             $result = $result + $operand;
+             $g_result = $g_result + $g_opnum;
              break;
           case '-':
-             $result = $operand - $result;
+             $g_result = $g_opnum - $g_result;
              break;
           case '*':
-             $result = $operand * $result;
+             $g_result = $g_opnum * $g_result;
              break;
           case '/':
-             $result = $operand / $result;
+             $g_result = $g_opnum / $g_result;
              break;
         }
 
-        echo $result;        
-        $_SESSION['result'] = 0;
-        $_SESSION['operand'] = $result; 
-        $_SESSION['operator'] = ''; 
-        $_SESSION['isNum'] = ''; 
+        echo $g_result;
+        $g_opnum = $g_result;        
+        $g_result = 0;
+
       }
       else{
-        echo $operand;        
-        $_SESSION['operator'] = ''; 
-        $_SESSION['isNum'] = ''; 
+        echo $g_opnum;        
       }
+      
+      $g_opt = ''; 
+      $g_isNum = ''; 
+      $g_dec = 0;
    }
    else
    {  echo "0.";
-      $_SESSION['result'] = 0; 
-      $_SESSION['operator'] = ''; 
-      $_SESSION['operand'] = 0; 
-      $_SESSION['isNum'] = ''; 
+      $g_result = 0;
+      $g_opt = '';
+      $g_opnum = 0;
+      $g_isNum = '';
+      $g_dec = 0;
    }  
+
+
+   $_SESSION['result'] = $g_result; 
+   $_SESSION['operator'] = $g_opt; 
+   $_SESSION['operand'] = $g_opnum; 
+   $_SESSION['isNum'] = $g_isNum; 
+   $_SESSION['decimal'] = $g_dec;
 ?>
