@@ -1,4 +1,24 @@
 <?php
+function calculate($result,$opt,$opnum){
+        switch($opt){
+          case '':
+             break;
+          case '+':
+             $result = $result + $opnum;
+             break;
+          case '-':
+             $result = $opnum - $result;
+             break;
+          case '*':
+             $result = $opnum * $result;
+             break;
+          case '/':
+             $result = $opnum / $result;
+             break;
+         }
+	return $result;
+}
+
    session_start();
 
 //------- initial global variant ---------------------
@@ -44,7 +64,7 @@
       $g_result = 0;
    }
 
-   if (eregi("[0-9]",$input))
+   if (eregi("[0-9]$",$input))
    {
       if( $g_dec == 0 ){
         $g_result = $g_result*10 + (int)$input;
@@ -59,11 +79,85 @@
   }
   elseif( $input == '.' ){
       echo $g_result;
-      $g_dec = 1;
+      if( $g_dec == 0 ){
+        $g_dec = 1;
+      }  
+      $g_isNum = 'Y';
+  }
+  elseif( $input == 'CE'){
+      $g_result = 0;
+      $g_dec = 0;
+      echo $g_result;
+      $g_isNum = 'Y';
+  }
+  elseif( $input == '+/-'){
+      if($g_isNum == 'Y'){
+        $g_result = $g_result * (-1);
+        echo $g_result;
+      }
+      else{
+        $g_opnum = $g_opnum * (-1);
+	echo $g_opnum;
+      }
+  }
+  elseif( $input == 'sqrt'){
+      if($g_isNum == 'Y'){
+        $g_result = sqrt($g_result);
+        echo $g_result;
+      }
+      else{
+        $g_opnum = sqrt($g_opnum);
+	echo $g_opnum;
+      }
+  }
+  elseif( $input == '1/x'){
+      if($g_isNum == 'Y'){
+        $g_result = 1 / $g_result;
+        echo $g_result;
+      }
+      else{
+        $g_opnum = 1 / $g_opnum;
+	echo $g_opnum;
+      }
+  }
+  elseif( $input == '%'){
+      if($g_isNum == 'Y'){
+        $g_result = $g_opnum * $g_result/100;
+        echo $g_result;
+      }
+      else{
+        $g_opnum = $g_opnum * $g_opnum/100;
+	echo $g_opnum;
+      }
+  }
+  elseif( $input == 'Back'){
+      if( $g_dec == 0 ){
+        $g_result = $g_result / 10;
+        if( $g_result > 0){
+           $g_result = floor($g_result);
+	} 
+	else{
+           $g_result = ceil($g_result);
+	}
+      }
+      else{
+        $g_dec = $g_dec - 1; //$g_dec is next decimal number
+	$g_result = $g_result * pow(10, $g_dec-1); 
+        if( $g_result > 0){
+           $g_result = floor($g_result);
+	} 
+	else{
+           $g_result = ceil($g_result);
+	}
+	$g_result = $g_result / pow(10, $g_dec-1);
+	if($g_dec==1)$g_dec=0;  // when back to integer, delet point as well
+      }  
+      echo $g_result;
       $g_isNum = 'Y';
   }
   elseif( $input == '+' || $input == '-' || $input == '*' || $input == '/' ){
       if ($g_isNum == 'Y'){ 
+	 if($g_opt != '')$g_result = calculate($g_result,$g_opt,$g_opnum);
          $g_opnum = $g_result; 
          echo $g_result;
       }
@@ -78,23 +172,7 @@
    }
    elseif( $input == '='){
      if( $g_isNum == 'Y' ){
-        switch($g_opt){
-          case '':
-             break;
-          case '+':
-             $g_result = $g_result + $g_opnum;
-             break;
-          case '-':
-             $g_result = $g_opnum - $g_result;
-             break;
-          case '*':
-             $g_result = $g_opnum * $g_result;
-             break;
-          case '/':
-             $g_result = $g_opnum / $g_result;
-             break;
-        }
-
+        $g_result = calculate($g_result,$g_opt,$g_opnum);
         echo $g_result;
         $g_opnum = $g_result;        
         $g_result = 0;
@@ -123,4 +201,5 @@
    $_SESSION['operand'] = $g_opnum; 
    $_SESSION['isNum'] = $g_isNum; 
    $_SESSION['decimal'] = $g_dec;
+
 ?>
