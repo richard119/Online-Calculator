@@ -3,6 +3,7 @@
 	<title>Online Calculator</title>
         <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1, user-scalable=no" />
 	<script type="text/javascript" src="lib/jquery-1.2.6.pack.js"></script>
+	<script type="text/javascript" src="lib/json.js"></script>
 	<script type="text/javascript">
            <!--
            $(document).ready( function () {
@@ -11,13 +12,14 @@
                url: 'ajaxcalc.php',
                type: 'POST',
                data:'name='+encodeURIComponent($(this).val())+"&out="+$('#out').val(),
-               dataType: 'html',
+               dataType: 'text/json',
                timeout: 2000,
                error: function(){
                 alert('Error loading XML document');
                },
-               success: function(html){
-                $('#out').val(html);
+               success: function(strjson){
+                   var returnobj = eval("("+strjson+")");
+                   $('#out').val(returnobj.Num);
                }
                });
            });

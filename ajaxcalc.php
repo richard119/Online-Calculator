@@ -20,7 +20,7 @@ function calculate($result,$opt,$opnum){
 }
 
 function showresult($arr){
-     echo $arr["Num"]; 
+     echo json_encode($arr); 
 }
 
    session_start();
