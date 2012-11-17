@@ -19,10 +19,15 @@ function calculate($result,$opt,$opnum){
 	return $result;
 }
 
+function showresult($arr){
+     echo $arr["Num"]; 
+}
+
    session_start();
 
 //------- initial global variant ---------------------
-   if(isset($_SESSION['result'])){       // current value
+
+  if(isset($_SESSION['result'])){       // current value
        $g_result = $_SESSION['result'];
    }
    else{
@@ -56,7 +61,11 @@ function calculate($result,$opt,$opnum){
    else{
        $g_dec = 0;
    } 
+
+
+  $g_array = array("Num"=>0,"MR"=>'N');
 //-------------------------------------------
+
 
    $input =  $_POST['name'];
    $out   =  $_POST['out'];
@@ -73,12 +82,16 @@ function calculate($result,$opt,$opnum){
         $g_result = $g_result + (int)$input / pow(10,$g_dec);
         $g_dec++;
       }
-      echo $g_result;
+
+      $g_array["Num"] = $g_result;
+      showresult($g_array);
 
       $g_isNum  = 'Y'; 
   }
   elseif( $input == '.' ){
-      echo $g_result;
+      $g_array["Num"] = $g_result;
+      showresult($g_array);
+      
       if( $g_dec == 0 ){
         $g_dec = 1;
       }  
@@ -87,48 +100,57 @@ function calculate($result,$opt,$opnum){
   elseif( $input == 'CE'){
       $g_result = 0;
       $g_dec = 0;
-      echo $g_result;
+
+      $g_array["Num"] = $g_result;
+      showresult($g_array);
+
       $g_isNum = 'Y';
   }
   elseif( $input == '+/-'){
       if($g_isNum == 'Y'){
         $g_result = $g_result * (-1);
-        echo $g_result;
+        $g_array["Num"] = $g_result;
       }
       else{
         $g_opnum = $g_opnum * (-1);
-	echo $g_opnum;
+        $g_array["Num"] = $g_opnum;
       }
+
+      showresult($g_array);
   }
   elseif( $input == 'sqrt'){
       if($g_isNum == 'Y'){
         $g_result = sqrt($g_result);
-        echo $g_result;
+        $g_array["Num"] = $g_result;
       }
       else{
         $g_opnum = sqrt($g_opnum);
-	echo $g_opnum;
+        $g_array["Num"] = $g_opnum;
       }
+
+      showresult($g_array);
   }
   elseif( $input == '1/x'){
       if($g_isNum == 'Y'){
         $g_result = 1 / $g_result;
-        echo $g_result;
+        $g_array["Num"] = $g_result;
       }
       else{
         $g_opnum = 1 / $g_opnum;
-	echo $g_opnum;
+        $g_array["Num"] = $g_opnum;
       }
+      showresult($g_array);
   }
   elseif( $input == '%'){
       if($g_isNum == 'Y'){
         $g_result = $g_opnum * $g_result/100;
-        echo $g_result;
+        $g_array["Num"] = $g_result;
       }
       else{
         $g_opnum = $g_opnum * $g_opnum/100;
-	echo $g_opnum;
+        $g_array["Num"] = $g_opnum;
       }
+      showresult($g_array);
   }
   elseif( $input == 'Back'){
       if( $g_dec == 0 ){
@@ -152,19 +174,23 @@ function calculate($result,$opt,$opnum){
 	$g_result = $g_result / pow(10, $g_dec-1);
 	if($g_dec==1)$g_dec=0;  // when back to integer, delet point as well
       }  
-      echo $g_result;
+
+      $g_array["Num"] = $g_result;
+      showresult($g_array);
+
       $g_isNum = 'Y';
   }
   elseif( $input == '+' || $input == '-' || $input == '*' || $input == '/' ){
       if ($g_isNum == 'Y'){ 
 	 if($g_opt != '')$g_result = calculate($g_result,$g_opt,$g_opnum);
          $g_opnum = $g_result; 
-         echo $g_result;
+         $g_array["Num"] = $g_result;
       }
       else{
-         echo $g_opnum;
+         $g_array["Num"] = $g_opnum;
       } 
 
+      showresult($g_array);
       $g_opt = $input; 
       $g_result = 0;
       $g_isNum = ''; 
@@ -173,21 +199,24 @@ function calculate($result,$opt,$opnum){
    elseif( $input == '='){
      if( $g_isNum == 'Y' ){
         $g_result = calculate($g_result,$g_opt,$g_opnum);
-        echo $g_result;
+        $g_array["Num"] = $g_result;
         $g_opnum = $g_result;        
         $g_result = 0;
-
       }
       else{
-        echo $g_opnum;        
+        $g_array["Num"] = $g_opnum;
       }
       
+      showresult($g_array);
       $g_opt = ''; 
       $g_isNum = ''; 
       $g_dec = 0;
    }
    else
-   {  echo "0.";
+   {  
+      
+      $g_array["Num"] = "0.";
+      showresult($g_array);
       $g_result = 0;
       $g_opt = '';
       $g_opnum = 0;
