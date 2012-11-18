@@ -63,7 +63,21 @@ function showresult($arr){
    } 
 
 
-  $g_array = array("Num"=>0,"MR"=>'N');
+   if(isset($_SESSION['MR'])){        // Memory record flag
+       $g_mr = $_SESSION['MR'];
+   }
+   else{
+       $g_mr = 'N';
+   } 
+  
+   if(isset($_SESSION['mrnum'])){        // Memory record flag
+       $g_mrnum = $_SESSION['mrnum'];
+   }
+   else{
+       $g_mrnum = 0;
+   } 
+   
+   $g_array = array("Num"=>$g_result,"MR"=>$g_mr);
 //-------------------------------------------
 
 
@@ -212,9 +226,57 @@ function showresult($arr){
       $g_isNum = ''; 
       $g_dec = 0;
    }
+   elseif( $input == 'MR'){
+      $g_result = $g_mrnum;        
+      
+      $g_array["Num"] = $g_mrnum;
+      showresult($g_array);
+      $g_isNum = 'Y'; 
+      $g_dec = 0;
+   }
+   elseif( $input == 'M+'){
+      if($g_isNum == 'Y'){
+        $g_mrnum = $g_mrnum + $g_result;        
+        $g_array["Num"] = $g_result;
+      }
+      else{
+        $g_mrnum = $g_mrnum + $g_opnum;        
+        $g_array["Num"] = $g_opnum;
+      }
+      
+      $g_mr = 'Y';
+      $g_array["MR"] = $g_mr;
+      showresult($g_array);
+   }
+   elseif( $input == 'M-'){
+      if($g_isNum == 'Y'){
+        $g_mrnum = $g_mrnum - $g_result;        
+        $g_array["Num"] = $g_result;
+      }
+      else{
+        $g_mrnum = $g_mrnum - $g_opnum;        
+        $g_array["Num"] = $g_opnum;
+      }
+      
+      $g_mr = 'Y';
+      $g_array["MR"] = $g_mr;
+      showresult($g_array);
+   }
+   elseif( $input == 'MC'){
+      if($g_isNum == 'Y'){
+        $g_array["Num"] = $g_result;
+      }
+      else{
+        $g_array["Num"] = $g_opnum;
+      }
+
+      $g_mrnum = 0;        
+      $g_mr = 'N';
+      $g_array["MR"] = $g_mr;
+      showresult($g_array);
+   }
    else
    {  
-      
       $g_array["Num"] = "0.";
       showresult($g_array);
       $g_result = 0;
@@ -230,5 +292,6 @@ function showresult($arr){
    $_SESSION['operand'] = $g_opnum; 
    $_SESSION['isNum'] = $g_isNum; 
    $_SESSION['decimal'] = $g_dec;
-
+   $_SESSION['MR'] = $g_mr;
+   $_SESSION['mrnum'] = $g_mrnum;
 ?>

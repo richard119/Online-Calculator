@@ -3,11 +3,10 @@
 	<title>Online Calculator</title>
         <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1, user-scalable=no" />
 	<script type="text/javascript" src="lib/jquery-1.2.6.pack.js"></script>
-	<script type="text/javascript" src="lib/json.js"></script>
 	<script type="text/javascript">
            <!--
            $(document).ready( function () {
-           $(".rightbutton,.bigbutton").click ( function () {
+           $(".rightbutton,.bigbutton,.leftbutton").click ( function () {
                $.ajax({
                url: 'ajaxcalc.php',
                type: 'POST',
@@ -20,6 +19,12 @@
                success: function(strjson){
                    var returnobj = eval("("+strjson+")");
                    $('#out').val(returnobj.Num);
+	           if( returnobj.MR == 'Y' ){
+		     $('#MR').css("background","#00ffff");
+		   }
+		   else{
+		     $('#MR').css("background","#ffffff");
+		   }
                }
                });
            });
@@ -144,7 +149,7 @@
 					<input class="bigbutton" type="button" value="C">
 				</div>
 				<div class="samllbutton">
-					<input class="leftbutton" type="button" value="MC">
+					<input class="leftbutton" type="button" id="MR" value="MR">
 					<input class="rightbutton" type="button" value="7">
 					<input class="rightbutton" type="button" value="8">
 					<input class="rightbutton" type="button" value="9">
@@ -152,7 +157,7 @@
 					<input class="rightbutton" type="button" value="sqrt">
 				</div>
 				<div class="samllbutton">
-					<input class="leftbutton" type="button" value="MR">
+					<input class="leftbutton" type="button" value="M+">
 					<input class="rightbutton" type="button" value="4">
 					<input class="rightbutton" type="button" value="5">
 					<input class="rightbutton" type="button" value="6">
@@ -160,7 +165,7 @@
 					<input class="rightbutton" type="button" value="%">
 				</div>
 				<div class="samllbutton">
-					<input class="leftbutton" type="button" value="MS">
+					<input class="leftbutton" type="button" value="M-">
 					<input class="rightbutton" type="button" value="1">
 					<input class="rightbutton" type="button" value="2">
 					<input class="rightbutton" type="button" value="3">
@@ -168,7 +173,7 @@
 					<input class="rightbutton" type="button" value="1/x">
 				</div>
 				<div class="samllbutton">
-					<input class="leftbutton" type="button" value="M+">
+					<input class="leftbutton" type="button" value="MC">
 					<input class="rightbutton" type="button" value="0">
 					<input class="rightbutton" type="button" value="+/-">
 					<input class="rightbutton" type="button" value=".">
