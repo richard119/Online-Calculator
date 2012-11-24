@@ -3,14 +3,15 @@
 	<title>Online Calculator</title>
         <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1, user-scalable=no" />
 	<script type="text/javascript" src="lib/jquery-1.2.6.pack.js"></script>
+	<script type="text/javascript" src="lib/mousetrap.min.js"></script>
 	<script type="text/javascript">
            <!--
-           $(document).ready( function () {
-           $(".rightbutton,.bigbutton,.leftbutton").click ( function () {
+
+          function _sendmessage(Btext) {
                $.ajax({
                url: 'ajaxcalc.php',
                type: 'POST',
-               data:'name='+encodeURIComponent($(this).val())+"&out="+$('#out').val(),
+               data:'name='+encodeURIComponent(Btext)+"&out="+$('#out').val(),
                dataType: 'text/json',
                timeout: 2000,
                error: function(){
@@ -26,10 +27,32 @@
 		     $('#MR').css("background","#ffffff");
 		   }
                }
-               });
+               }); };
+
+           $(document).ready( function () {
+           $(".rightbutton,.bigbutton,.leftbutton").click ( 
+               function () {
+                 _sendmessage( $(this).val() ); 
+               });     
            });
-           })
            //->
+
+           Mousetrap.bind('1', function(){ _sendmessage('1');  });
+           Mousetrap.bind('2', function(){ _sendmessage('2');  });
+           Mousetrap.bind('3', function(){ _sendmessage('3');  });
+           Mousetrap.bind('4', function(){ _sendmessage('4');  });
+           Mousetrap.bind('5', function(){ _sendmessage('5');  });
+           Mousetrap.bind('6', function(){ _sendmessage('6');  });
+           Mousetrap.bind('7', function(){ _sendmessage('7');  });
+           Mousetrap.bind('8', function(){ _sendmessage('8');  });
+           Mousetrap.bind('9', function(){ _sendmessage('9');  });
+           Mousetrap.bind('0', function(){ _sendmessage('0');  });
+           Mousetrap.bind('+', function(){ _sendmessage('+');  });
+           Mousetrap.bind('-', function(){ _sendmessage('-');  });
+           Mousetrap.bind('*', function(){ _sendmessage('*');  });
+           Mousetrap.bind('/', function(){ _sendmessage('/');  });
+           Mousetrap.bind('=', function(){ _sendmessage('=');  });
+
 	</script>
 	<style type="text/css">
 		*{
@@ -37,7 +60,7 @@
 			padding:0px;
 		}
 		#main{
-			position:relative;
+			position:absolute;
 			
 			border:0px solid;
 			border-right:2px solid #8d8dff;
